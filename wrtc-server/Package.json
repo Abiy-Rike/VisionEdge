@@ -5,8 +5,12 @@
   "scripts": {
     "start": "node server.js"
   },
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {
     "express": "^4.18.2",
-    "wrtc": "^0.4.7"
+    "wrtc": "^0.4.7",
+    "cors": "^2.8.5"
   }
 }
