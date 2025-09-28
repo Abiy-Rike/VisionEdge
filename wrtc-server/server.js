@@ -1,26 +1,22 @@
 const express = require("express");
+const cors = require("cors");
 const { RTCPeerConnection, RTCSessionDescription } = require("wrtc");
 
 const app = express();
+app.use(cors({ origin: "*" }));
 app.use(express.json());
 
-// Offer handler
 app.post("/offer", async (req, res) => {
   try {
     const pc = new RTCPeerConnection({
       iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
     });
 
-    // Save remote streams
     pc.ontrack = (event) => {
-      console.log("📹 Received remote stream with tracks:", event.streams[0].getTracks().length);
-      // You could record, relay, or just acknowledge
+      console.log("📹 Remote track received:", event.streams[0].id);
     };
 
-    // Apply remote offer
     await pc.setRemoteDescription(new RTCSessionDescription(req.body));
-
-    // Create answer
     const answer = await pc.createAnswer();
     await pc.setLocalDescription(answer);
 
@@ -31,9 +27,8 @@ app.post("/offer", async (req, res) => {
   }
 });
 
-// Health check
 app.get("/health", (req, res) => {
-  res.json({ status: "ok", service: "webrtc-wrtc-server" });
+  res.json({ status: "ok", service: "wrtc-server" });
 });
 
 const PORT = process.env.PORT || 8080;
